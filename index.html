@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Random User Generator</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<h1 class="title"> Random User Generator</h1>
+<div class="user-profile">
+  <img id="avatar" src="https://pbs.twimg.com/profile_images/743138182607175680/ZJzktgBk_400x400.jpg" />
+  <div id="fullname">Jon Snow</div>
+  <div id="username">
+  kingofnorth
+  </div>
+  <div class="description">
+    <div>Email: <span id="email">jon@hotmail.com</span></div>
+    <div>City: <span id="city">Winterfell</span></div>
+  </div>
+  <div class="footer">
+  <button id="btn">Next User!</button>
+  </div>
+</div>
+
+<script>
+var avatar = document.querySelector("#avatar");
+var fullname = document.querySelector("#fullname");
+var username = document.querySelector("#username");
+var email = document.querySelector("#email");
+var city = document.querySelector("#city");
+var btn = document.querySelector("#btn");
+
+btn.addEventListener("click", randomUser);
+window.addEventListener("load", randomUser);
+
+function randomUser() {
+var url = "https://randomuser.me/api";
+fetch(url)
+.then(handleErrors)
+.then(parseJSON)
+.then(updateProfile)
+.catch(printError)
+}
+
+function handleErrors (request){
+if(!request.ok) {
+  throw Error(request.status);
+}
+return request;
+}
+
+function parseJSON(response) {
+  //console.log(response);
+  return response.json();
+}
+
+function updateProfile(response) {
+  var user = response.results[0];
+  //console.log(user);
+  avatar.src = user.picture.medium;
+  fullname.innerText = toTitleCase(`${user.name.first} ${user.name.last}`);
+  username.innerText = user.login.username;
+  email.innerText = user.email;
+  city.innerText = toTitleCase(user.location.city);
+}
+
+function printError(error) {
+  console.log(error);
+}
+
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, function(txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+</script>
+</body>
+</html>
